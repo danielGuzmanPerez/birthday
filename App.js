@@ -1,6 +1,7 @@
 
 import React, {useEffect,useState} from "react";
 import {SafeAreaView,View,Text} from "react-native";
+import Auth from "./src/components/Auth"
 import firebase from './src/utils/firebase';
 import "firebase/auth";
 
@@ -15,7 +16,7 @@ export default function App(){
 
   return(
     <SafeAreaView>
-      {user ? <Text>Estas logueado</Text> : <Text>No estas logueado</Text>}
+      {user ? <Text>Estas logueado</Text> : <Auth/>}
     </SafeAreaView>
   );
 }
