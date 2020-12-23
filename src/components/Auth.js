@@ -1,12 +1,17 @@
 import React, {useState} from 'react';
 import {View,Text,StyleSheet,Image} from "react-native";
+import LoginForm from"./LoginForm";
+import RegisterForm from './RegisterForm';
 
 export default function Auth(){
     const [isLogin, setIsLogin] = useState(true)
+    const chanceForm = () =>{
+        setIsLogin(!isLogin);
+    }
     return(
         <View style={Styles.View}>
             <Image style={Styles.logo}source={require("../assets/logo.png")}/>
-            <Text>Auth</Text>
+            {isLogin ? <LoginForm chanceForm={chanceForm}/>: <RegisterForm chanceForm={chanceForm}/>}
         </View>
     );
 }
