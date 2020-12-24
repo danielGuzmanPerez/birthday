@@ -1,6 +1,6 @@
 
 import React, { useEffect,useState} from "react";
-import {StyleSheet,SafeAreaView,View,Text,StatusBar} from "react-native";
+import {StyleSheet,SafeAreaView,View,Text,StatusBar,Button} from "react-native";
 import Auth from "./src/components/Auth"
 import firebase from './src/utils/firebase';
 import "firebase/auth";
@@ -18,10 +18,22 @@ export default function App(){
     <>
       <StatusBar barStyle="light-content"/>
       <SafeAreaView style={styles.backGround}>
-        {user ? <Text>Estas logueado</Text> : <Auth/>}
+        {user ? <LogOut/> : <Auth/>}
       </SafeAreaView>
     </>
   );
+}
+
+function LogOut(){
+  const logout = ()=>{
+    firebase.auth().signOut();
+  }
+  return(
+    <View>
+      <Text>Estas logueado</Text>
+      <Button title="Cerrar sesión" onPress={logout}/>
+    </View>
+  )
 }
 const styles= StyleSheet.create({
   backGround:{

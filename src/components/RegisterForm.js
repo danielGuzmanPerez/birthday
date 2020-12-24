@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Button} from 'react-native'
 import {validateEmail} from "../utils/validations"
+import firebase from "../utils/firebase";
 
 export default function LoginForm(props) {
     const [formData, setFormData] = useState(defaultValue());
@@ -14,10 +15,24 @@ export default function LoginForm(props) {
             if(!formData.password) errors.password=true;
             if(!formData.repeatPassword) errors.repeatPassword=true;
         }else if(!validateEmail(formData.email)){
-                    errors.email=true;
+                errors.email=true;
         }else if(formData.password !== formData.repeatPassword){
                 errors.password=true;
                 errors.repeatPassword=true;
+        }else if(formData.password.length < 6){
+            errors.password=true;
+        }else{
+            firebase.auth()
+            .createUserWithEmailAndPassword(formData.email,formData.password)
+            .then(()=>{
+                console.log("cuenta creada");
+            }).catch(()=>{
+                setFormError({
+                    email:true,
+                    password:true,
+                    repeatPassword:true,
+                });
+            });
         }
         setFormError(errors);
     }
