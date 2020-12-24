@@ -1,32 +1,44 @@
 import React, {useState} from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Button} from 'react-native'
+import {validateEmail} from "../utils/validations"
 
 export default function LoginForm(props) {
     const [formData, setFormData] = useState(defaultValue());
+    const [formError, setFormError] = useState({});
     const {chanceForm}= props;
 
     const Register = () =>{
-        console.log("Registrando");
-        console.log(formData);
+        let errors={};
+        if(!formData.email || !formData.password || !formData.repeatPassword){
+            if(!formData.email) errors.email=true;
+            if(!formData.password) errors.password=true;
+            if(!formData.repeatPassword) errors.repeatPassword=true;
+        }else if(!validateEmail(formData.email)){
+                    errors.email=true;
+        }else if(formData.password !== formData.repeatPassword){
+                errors.password=true;
+                errors.repeatPassword=true;
+        }
+        setFormError(errors);
     }
     return (
         <>
             
             <TextInput
-             style={styles.input} 
+             style={[styles.input,formError.email && styles.errorInput]} 
              placeholder="Correo electronico" 
              placeholderTextColor="#969696" 
              onChange={(e) =>  setFormData({...formData,email:e.nativeEvent.text})}
              />
             <TextInput 
-            style={styles.input} 
+            style={[styles.input,formError.password && styles.errorInput]} 
             placeholder="Contraseña" 
             placeholderTextColor="#969696" 
             secureTextEntry={true}
             onChange={(e) =>  setFormData({...formData,password:e.nativeEvent.text})}
              />
             <TextInput 
-            style={styles.input} 
+            style={[styles.input,formError.repeatPassword && styles.errorInput]}  
             placeholder="Repetir contraseña" 
             placeholderTextColor="#969696"
             secureTextEntry={true}
@@ -73,5 +85,8 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:"flex-end",
         marginBottom:10
-    }
+    },
+    errorInput:{
+        borderColor:'#940c0c',
+    },
 })
