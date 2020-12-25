@@ -5,21 +5,46 @@ import firebase from "../utils/firebase";
 
 export default function LoginForm(props) {
     const {chanceForm}= props;
+    const [formData, setFormData] = useState(defaultValue());
+    const [formError, setFormError] = useState({})
     const login = () =>{
-        console.log("iniciando... ");
+       let errors = {};
+       if(!formData.email || !formData.password){
+           if(!formData.email ) errors.email=true;
+           if(!formData.password ) errors.password=true;
+       }else if(!validateEmail(formData.email)){
+        errors.email=true;
+       }else{
+           firebase.auth()
+           .signInWithEmailAndPassword(formData.email,formData.password)
+           .catch(()=>{
+               setFormError({
+                   email:true,
+                   password:true
+               })
+           })
+       }
+       setFormError(errors);
+    }
+    const onChange = (e,type) =>{
+        console.log("dato: ",e.nativeEvent.text);
+        console.log("type: ",type);
+        setFormData({...formData, [type]: e.nativeEvent.text});
     }
     return (
         <>
             <TextInput
-                style={styles.input}
+                style={[styles.input, formError.email && styles.error]}
                 placeholder="Corrreo electronico"
                 placeholderTextColor="#969696"
+                onChange={(e) => onChange(e,"email")}
             />
             <TextInput
-                style={styles.input}
+                style={[styles.input, formError.password && styles.error]}
                 placeholder="Contraseña"
                 placeholderTextColor="#969696"
                 secureTextEntry={true}
+                onChange={(e) => onChange(e,"password")}
             />
              <TouchableOpacity onPress={login}>
                 <Text style={styles.btnText} >Iniciar sesión</Text>
@@ -31,6 +56,13 @@ export default function LoginForm(props) {
             </View>
         </>
     )
+}
+function defaultValue(){
+    return{
+        email:"",
+        password:"",
+        
+    };
 }
 
 const styles = StyleSheet.create({
@@ -54,5 +86,8 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:"flex-end",
         marginBottom:10
+    },
+    error:{
+        borderColor:"#940c0c",
     }
 })

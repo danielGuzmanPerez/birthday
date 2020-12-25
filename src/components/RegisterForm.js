@@ -24,9 +24,7 @@ export default function LoginForm(props) {
         }else{
             firebase.auth()
             .createUserWithEmailAndPassword(formData.email,formData.password)
-            .then(()=>{
-                console.log("cuenta creada");
-            }).catch(()=>{
+            .catch(()=>{
                 setFormError({
                     email:true,
                     password:true,
